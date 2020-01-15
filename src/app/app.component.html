@@ -22,6 +22,7 @@
 
 <mat-toolbar color="accent">
   <input matInput
+         autocomplete="off"
          placeholder="Do net forget about..."
          [formControl]="doableTextForm"
          (keydown.enter)="addDoable()">
