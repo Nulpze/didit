@@ -10,16 +10,21 @@
 }
 
 .spacer {
+  flex: 1;
+}
+
+.list-spacer {
   height: 82px;
 }
 
-.mat-toolbar {
+.toolbar {
   position: fixed;
   padding: 0 8px;
   margin: 8px;
   bottom: 0;
   width: calc(100% - 16px);
   border-radius: 4px;
+  transition: .3s ease-in-out;
 
   input {
     flex: 1;
@@ -29,7 +34,8 @@
     border: none;
     outline: none;
   }
-  button {
+
+  .toolbar-accept {
     margin: 0 0 0 8px;
   }
 }

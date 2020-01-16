@@ -18,17 +18,44 @@
   <span>&#9749;</span>
   Nothing is going on.
 </div>
-<div class="spacer"></div>
+<div class="list-spacer"></div>
 
-<mat-toolbar color="accent">
+<mat-toolbar color="accent"
+             class="toolbar"
+             (swipeleft)="toggleActions()">
   <input matInput
          autocomplete="off"
          placeholder="Do net forget about..."
          [formControl]="doableTextForm"
          (keydown.enter)="onCommand()">
   <button mat-icon-button
+          class="toolbar-accept"
           *ngIf="doableTextForm.value.length > 0"
           (click)="addDoable()">
     <mat-icon>add</mat-icon>
+  </button>
+  <button mat-icon-button
+          class="toolbar-accept"
+          *ngIf="doableTextForm.value.length === 0"
+          (click)="toggleActions()">
+    <mat-icon>more_horiz</mat-icon>
+  </button>
+</mat-toolbar>
+
+<mat-toolbar color="accent"
+             class="toolbar"
+             (swiperight)="toggleActions()"
+             [ngStyle]="{left: actionsActive ? '0' : '100%'}">
+  <button mat-icon-button
+          (click)="toggleActions()">
+    <mat-icon>arrow_back</mat-icon>
+  </button>
+  <button mat-icon-button
+          (click)="toggleDense()">
+    <mat-icon>{{dense ? 'unfold_more' : 'unfold_less'}}</mat-icon>
+  </button>
+  <span class="spacer"></span>
+  <button mat-icon-button (click)="onDeleteDoneItems()">
+    <mat-icon>delete</mat-icon>
   </button>
 </mat-toolbar>

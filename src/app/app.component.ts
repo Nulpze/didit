@@ -3,6 +3,7 @@ import {Doable} from './interfaces/doable';
 import {FormControl} from '@angular/forms';
 
 const ItemStorageKey = 'items';
+const DenseStorageKey = 'dense';
 const Commands = {
   clean: '/clean',
   dense: '/dense'
@@ -17,23 +18,29 @@ export class AppComponent implements OnInit {
   public readonly commands = Commands;
   public doableTextForm = new FormControl('');
   public items: Doable[] = [];
-  public dense = false;
+  public dense: boolean;
+  public actionsActive = false;
 
   public ngOnInit(): void {
     const savedItems = localStorage.getItem(ItemStorageKey);
+    const savedDense = localStorage.getItem(DenseStorageKey);
+    this.dense = savedDense ? savedDense === 'true' : false;
     if (savedItems) {
       this.items = JSON.parse(savedItems);
+      this.items = this.items.filter((item) => item.text.length > 0);
     }
-    this.scrollToBottom();
   }
 
   public onCommand(): void {
+    if (this.doableTextForm.value.length === 0) {
+      return;
+    }
     switch (this.doableTextForm.value) {
       case Commands.clean:
-        this.deleteDoneItems();
+        this.onDeleteDoneItems();
         break;
       case Commands.dense:
-        this.dense = !this.dense;
+        this.toggleDense();
         break;
       default:
         this.addDoable();
@@ -48,7 +55,6 @@ export class AppComponent implements OnInit {
       done: false,
     });
     this.updateStorage();
-    this.scrollToBottom();
     this.doableTextForm.setValue('');
   }
 
@@ -62,7 +68,20 @@ export class AppComponent implements OnInit {
     this.updateStorage();
   }
 
-  private deleteDoneItems(): void {
+  public onAllDone(): void {
+    this.items.forEach((item) => item.done = true);
+  }
+
+  public toggleActions(): void {
+    this.actionsActive = !this.actionsActive;
+  }
+
+  public toggleDense(): void {
+    this.dense = !this.dense;
+    localStorage.setItem(DenseStorageKey, this.dense ? 'true' : 'false');
+  }
+
+  public onDeleteDoneItems(): void {
     this.items = this.items.filter((item) => !item.done);
     this.updateStorage();
     this.doableTextForm.setValue('');
@@ -70,10 +89,6 @@ export class AppComponent implements OnInit {
 
   private sort(): void {
     this.items.sort((x, y) => (x === y) ? 0 : x ? -1 : 1);
-  }
-
-  private scrollToBottom(): void {
-    window.scrollTo(0, document.body.scrollHeight);
   }
 
   private updateStorage(): void {
