@@ -1,5 +1,5 @@
 <ul class="list">
-  <li *ngFor="let doable of items">
+  <li *ngFor="let doable of items" [ngClass]="{dense: dense}">
     <button class="item-check"
             mat-icon-button
             *ngIf="!doable.done"
@@ -15,8 +15,8 @@
   </li>
 </ul>
 <div *ngIf="items.length === 0" class="item-placeholder">
-  <mat-icon>list_alt</mat-icon>
-  Pretty empty
+  <span>&#9749;</span>
+  Nothing is going on.
 </div>
 <div class="spacer"></div>
 
@@ -25,8 +25,9 @@
          autocomplete="off"
          placeholder="Do net forget about..."
          [formControl]="doableTextForm"
-         (keydown.enter)="addDoable()">
-  <button mat-icon-button *ngIf="doableTextForm.value.length > 0"
+         (keydown.enter)="onCommand()">
+  <button mat-icon-button
+          *ngIf="doableTextForm.value.length > 0"
           (click)="addDoable()">
     <mat-icon>add</mat-icon>
   </button>

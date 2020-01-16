@@ -3,6 +3,10 @@ import {Doable} from './interfaces/doable';
 import {FormControl} from '@angular/forms';
 
 const ItemStorageKey = 'items';
+const Commands = {
+  clean: '/clean',
+  dense: '/dense'
+};
 
 @Component({
   selector: 'app-root',
@@ -10,8 +14,10 @@ const ItemStorageKey = 'items';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
+  public readonly commands = Commands;
   public doableTextForm = new FormControl('');
   public items: Doable[] = [];
+  public dense = false;
 
   public ngOnInit(): void {
     const savedItems = localStorage.getItem(ItemStorageKey);
@@ -19,6 +25,19 @@ export class AppComponent implements OnInit {
       this.items = JSON.parse(savedItems);
     }
     this.scrollToBottom();
+  }
+
+  public onCommand(): void {
+    switch (this.doableTextForm.value) {
+      case Commands.clean:
+        this.deleteDoneItems();
+        break;
+      case Commands.dense:
+        this.dense = !this.dense;
+        break;
+      default:
+        this.addDoable();
+    }
   }
 
   public addDoable(): void {
@@ -41,6 +60,12 @@ export class AppComponent implements OnInit {
   public onUndo(doable: Doable): void {
     doable.done = false;
     this.updateStorage();
+  }
+
+  private deleteDoneItems(): void {
+    this.items = this.items.filter((item) => !item.done);
+    this.updateStorage();
+    this.doableTextForm.setValue('');
   }
 
   private sort(): void {
