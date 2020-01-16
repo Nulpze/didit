@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {Doable} from './interfaces/doable';
 import {FormControl} from '@angular/forms';
+import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 
 const ItemStorageKey = 'items';
 const DenseStorageKey = 'dense';
@@ -85,6 +86,10 @@ export class AppComponent implements OnInit {
     this.items = this.items.filter((item) => !item.done);
     this.updateStorage();
     this.doableTextForm.setValue('');
+  }
+
+  public drop(event: CdkDragDrop<string[]>) {
+    moveItemInArray(this.items, event.previousIndex, event.currentIndex);
   }
 
   private sort(): void {

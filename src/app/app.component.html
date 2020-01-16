@@ -1,17 +1,24 @@
-<ul class="list">
-  <li *ngFor="let doable of items" [ngClass]="{dense: dense}">
-    <button class="item-check"
-            mat-icon-button
+<ul class="list" cdkDropList (cdkDropListDropped)="drop($event)">
+  <li *ngFor="let doable of items"
+      [ngClass]="{dense: dense, done: doable.done}"
+      cdkDrag class="list-item">
+    <span>{{doable.text}}</span>
+    <button mat-icon-button
             *ngIf="!doable.done"
             (click)="onDone(doable)">
       <mat-icon>check</mat-icon>
     </button>
-    <span>{{doable.text}}</span>
-    <div class="item-overlay" [ngClass]="{active: doable.done}">
+    <button *ngIf="doable.done"
+            class="list-item-redo"
+            mat-icon-button
+            (click)="onUndo(doable)">
+      <mat-icon>redo</mat-icon>
+    </button>
+    <!--<div class="item-overlay" [ngClass]="{active: doable.done}">
       <button *ngIf="doable.done" mat-icon-button (click)="onUndo(doable)">
         <mat-icon>redo</mat-icon>
       </button>
-    </div>
+    </div>-->
   </li>
 </ul>
 <div *ngIf="items.length === 0" class="item-placeholder">
